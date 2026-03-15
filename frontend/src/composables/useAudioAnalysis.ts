@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import axios from 'axios'
+import apiClient from '@/api/client'
 import type { AnalysisResult } from '@/types'
 
 export function useAudioAnalysis() {
@@ -16,7 +17,7 @@ export function useAudioAnalysis() {
     formData.append('file', file)
 
     try {
-      const { data } = await axios.post<AnalysisResult>('/api/analyze', formData, {
+      const { data } = await apiClient.post<AnalysisResult>('/api/analyze', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

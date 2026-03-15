@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import axios from 'axios'
+import apiClient from '@/api/client'
 import type { Sample } from '@/types'
 
 const KEY_FREQUENCIES: Record<string, number> = {
@@ -94,7 +94,7 @@ export const usePlayerStore = defineStore('player', () => {
 
     // Notify backend
     try {
-      await axios.post(`/api/samples/${sample.id}/play`)
+      await apiClient.post(`/api/samples/${sample.id}/play`)
     } catch (_) {
       // Non-critical
     }

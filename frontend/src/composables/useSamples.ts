@@ -1,5 +1,5 @@
 import { ref, reactive, watch } from 'vue'
-import axios from 'axios'
+import apiClient from '@/api/client'
 import type { Sample, Pack, SampleFilters } from '@/types'
 
 export function useSamples() {
@@ -38,7 +38,7 @@ export function useSamples() {
       if (filters.sample_type) params.sample_type = filters.sample_type
       if (filters.pack_id !== null) params.pack_id = filters.pack_id
 
-      const { data } = await axios.get('/api/samples', { params })
+      const { data } = await apiClient.get('/api/samples', { params })
       if (offset === 0) {
         samples.value = data.samples
       } else {
@@ -54,7 +54,7 @@ export function useSamples() {
 
   async function fetchPacks() {
     try {
-      const { data } = await axios.get('/api/packs')
+      const { data } = await apiClient.get('/api/packs')
       packs.value = data
     } catch (err) {
       console.error('Failed to fetch packs:', err)
