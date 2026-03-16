@@ -48,11 +48,11 @@ def detect_key(y, sr):
             best_minor_corr = minor_corr
             best_minor_root = root
 
-    # Return the best match (major or minor)
+    # Return the best match (major or minor) in short format
     if best_major_corr >= best_minor_corr:
-        return f"{note_names[best_major_root]} Major"
+        return note_names[best_major_root]
     else:
-        return f"{note_names[best_minor_root]} Minor"
+        return f"{note_names[best_minor_root]}m"
 
 
 @router.post("/api/analyze", response_model=AnalysisResponse)

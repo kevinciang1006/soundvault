@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { convertToLongFormat, isMinorKey, getRootNote } from '@/utils/keyFormat'
 import type { AnalysisResult } from '@/types'
 
 const props = defineProps<{
@@ -20,10 +21,13 @@ const formattedDuration = computed(() => {
   return `${m}:${s.toString().padStart(2, '0')}`
 })
 
-const isMinor = computed(() => props.result.key.endsWith('m'))
-const rootNote = computed(() => props.result.key.replace('m', ''))
+// Backend returns short format (e.g., "Gm"), parse for display
+const isMinor = computed(() => isMinorKey(props.result.key))
+const rootNote = computed(() => getRootNote(props.result.key))
+const displayKey = computed(() => convertToLongFormat(props.result.key))
 
 function browseSoundsInKey() {
+  // Key is already in short format from backend, use directly
   router.push({ path: '/sounds', query: { key: props.result.key } })
 }
 </script>
@@ -71,7 +75,7 @@ function browseSoundsInKey() {
         class="flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-sans font-semibold text-sm rounded-xl transition-colors duration-200"
         @click="browseSoundsInKey"
       >
-        Find samples in {{ result.key }} &rarr;
+        Find samples in {{ displayKey }} &rarr;
       </button>
       <button
         class="flex-1 px-4 py-3 border border-border text-text-secondary hover:border-primary hover:text-text-primary font-sans font-medium text-sm rounded-xl transition-all duration-200"

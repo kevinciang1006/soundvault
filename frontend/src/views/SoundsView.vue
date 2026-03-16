@@ -59,7 +59,8 @@ watch(filters, () => {
 }, { deep: true })
 
 function playSample(sample: Sample) {
-  playerStore.play(sample)
+  const index = samples.value.findIndex(s => s.id === sample.id)
+  playerStore.setQueue(samples.value, index)
 }
 
 const sortOptions = [

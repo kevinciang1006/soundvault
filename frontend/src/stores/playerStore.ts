@@ -139,6 +139,14 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
+  function setQueue(samples: Sample[], startIndex: number = 0) {
+    queue.value = samples
+    currentIndex.value = startIndex
+    if (samples[startIndex]) {
+      play(samples[startIndex])
+    }
+  }
+
   return {
     currentSample,
     isPlaying,
@@ -152,5 +160,6 @@ export const usePlayerStore = defineStore('player', () => {
     prev,
     setVolume,
     addToQueue,
+    setQueue,
   }
 })
