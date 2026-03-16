@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import apiClient from '@/api/client'
+import { usePostHog } from '@/plugins/posthog'
 import type { Sample } from '@/types'
 
 const KEY_FREQUENCIES: Record<string, number> = {
@@ -91,6 +92,14 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     playTone(sample)
+
+    usePostHog().capture('sample_played', {
+      sample_id: sample.id,
+      sample_name: sample.filename,
+      sample_key: sample.key,
+      sample_bpm: sample.bpm,
+      sample_type: sample.sample_type,
+    })
 
     // Notify backend
     try {

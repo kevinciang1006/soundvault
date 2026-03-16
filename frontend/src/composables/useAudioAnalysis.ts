@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import apiClient from '@/api/client'
+import { usePostHog } from '@/plugins/posthog'
 import type { AnalysisResult } from '@/types'
 
 export function useAudioAnalysis() {
@@ -23,6 +24,13 @@ export function useAudioAnalysis() {
         },
       })
       result.value = data
+      usePostHog().capture('audio_analyzed', {
+        bpm: data.bpm,
+        key: data.key,
+        duration_seconds: data.duration_seconds,
+        file_name: file.name,
+        file_size_bytes: file.size,
+      })
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         error.value = err.response?.data?.detail ?? 'Analysis failed. Please try again.'

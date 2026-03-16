@@ -147,9 +147,13 @@ jobs:
           echo "Using backend URL: $URL"
 
       - name: Build & Push Frontend Image
+        env:
+          POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
+          BACKEND_URL: ${{ steps.backend-url.outputs.url }}
         run: |
           docker build \
-            --build-arg VITE_API_URL=${{ steps.backend-url.outputs.url }} \
+            --build-arg VITE_API_URL="$BACKEND_URL" \
+            --build-arg VITE_POSTHOG_KEY="$POSTHOG_KEY" \
             -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/frontend:${{ github.sha }} \
             -t ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/frontend:latest \
             ./frontend

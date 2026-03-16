@@ -8,6 +8,7 @@ import SampleRow from '@/components/sounds/SampleRow.vue'
 import AudioPlayer from '@/components/sounds/AudioPlayer.vue'
 import { useSamples } from '@/composables/useSamples'
 import { usePlayerStore } from '@/stores/playerStore'
+import { usePostHog } from '@/plugins/posthog'
 import type { Pack, Sample } from '@/types'
 
 const route = useRoute()
@@ -42,6 +43,11 @@ function onPackSelected(pack: Pack) {
     filters.pack_id = null
   } else {
     filters.pack_id = pack.id
+    usePostHog().capture('pack_selected', {
+      pack_id: pack.id,
+      pack_name: pack.name,
+      pack_genre: pack.genre,
+    })
   }
 }
 
@@ -51,11 +57,21 @@ function handleReset() {
 
 async function loadMore() {
   currentOffset.value += 20
+  usePostHog().capture('load_more_clicked', { offset: currentOffset.value })
   await fetchSamples(currentOffset.value)
 }
 
-watch(filters, () => {
+watch(filters, (newFilters) => {
   currentOffset.value = 0
+  usePostHog().capture('filters_applied', {
+    genre: newFilters.genre,
+    bpm_min: newFilters.bpm_min,
+    bpm_max: newFilters.bpm_max,
+    key: newFilters.key,
+    sample_type: newFilters.sample_type,
+    sort: newFilters.sort,
+    has_search: !!newFilters.q,
+  })
 }, { deep: true })
 
 function playSample(sample: Sample) {
